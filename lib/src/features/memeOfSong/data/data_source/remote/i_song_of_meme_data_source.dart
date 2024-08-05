@@ -8,6 +8,7 @@ import '../../../../../core/utlis/util.dart';
 
 abstract interface class ISongOfMemeDataSource {
   Future<List<SongModel>> getAllSong();
+  Future<void> downloadSong({required String url});
   Future<SongModel> getSongById({required num songId});
   Future<SongModel> getUserSong({required num pageI});
   Future<SongModel> createSong({required String lyrics});

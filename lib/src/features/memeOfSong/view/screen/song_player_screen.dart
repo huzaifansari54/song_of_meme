@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:song_of_meme/src/core/constant/colors_const.dart';
+import 'package:song_of_meme/src/core/extentions/util_extentions.dart';
 import 'package:song_of_meme/src/features/memeOfSong/domain/entity/song_entity.dart';
 
 import '../widget/controller_widget.dart';
@@ -113,6 +115,43 @@ class _SongPlayerScreenState extends State<SongPlayerScreen>
                   );
                 },
               ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                decoration: BoxDecoration(
+                    color: warningPrimary,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                            size: 25,
+                            widget.songEntity.isUserLiked
+                                ? Icons.thumb_down
+                                : Icons.thumb_up_off_alt_outlined),
+                        5.sw,
+                        widget.songEntity.likes.toString().text(size: 20)
+                      ],
+                    ),
+                    10.sw,
+                    Row(
+                      children: [
+                        const Icon(size: 25, Icons.visibility),
+                        5.sw,
+                        widget.songEntity.views.text(size: 20)
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              10.sh,
+              widget.songEntity.lyrics.toUpperCase().text(
+                    color: gray2,
+                  ),
+              10.sh,
             ],
           ),
         ),

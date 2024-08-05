@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:fpdart/src/task_either.dart';
+import 'package:fpdart/src/unit.dart';
 import 'package:song_of_meme/src/core/exeption/dio_exception.dart';
 import 'package:song_of_meme/src/core/exeption/exceptions.dart';
 import 'package:song_of_meme/src/core/exeption/failure_model.dart';
@@ -121,5 +122,11 @@ class SongOfMemeRepository implements ISongOfMemeRepository {
       final error = e as ApiException;
       return error.failure!;
     });
+  }
+
+  @override
+  TaskEither<ApiFailure, Unit> downloadSong({required String url}) {
+    // TODO: implement downloadSong
+    throw UnimplementedError();
   }
 }

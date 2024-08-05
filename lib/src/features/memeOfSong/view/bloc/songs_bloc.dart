@@ -9,20 +9,22 @@ import 'package:song_of_meme/src/features/memeOfSong/domain/use_case/dislike_use
 import 'package:song_of_meme/src/features/memeOfSong/domain/use_case/get_all_songs.dart';
 import 'package:song_of_meme/src/features/memeOfSong/domain/use_case/get_song_by_id_use_case.dart';
 import 'package:song_of_meme/src/features/memeOfSong/domain/use_case/like_song_use_case.dart';
+import 'package:song_of_meme/src/features/memeOfSong/domain/use_case/view_song_use_case.dart';
 import 'package:song_of_meme/src/features/memeOfSong/view/bloc/state/song_state.dart';
 import '../../../../lc.dart';
 
 final songsBloc = StateNotifierProvider<SongsBloc, SongState>(
-    (_) => SongsBloc(lc(), lc(), lc(), lc()));
+    (_) => SongsBloc(lc(), lc(), lc(), lc(), lc()));
 
 class SongsBloc extends StateNotifier<SongState> {
   final GetAllSongsUseCase _getAllSongsUseCase;
   final LikeSongUseCase _likeSongUseCase;
   final DislikeUseCase _dislikeUseCase;
+  final ViewSongUseCase _viewSongUseCase;
   final GetSongByIdUseCase _getSongByIdUseCase;
 
   SongsBloc(this._getAllSongsUseCase, this._likeSongUseCase,
-      this._dislikeUseCase, this._getSongByIdUseCase)
+      this._dislikeUseCase, this._getSongByIdUseCase, this._viewSongUseCase)
       : super(SongState.init());
 
   setQuery(String query) {
@@ -66,12 +68,12 @@ class SongsBloc extends StateNotifier<SongState> {
       state = state.copyWith(likeCount: likeCount, isUserLike: likeByUser);
     }));
 
-    final song = resultOrFailure
-        .map((model) => List<SongEntity>.from([state.allSongs, model]));
+    final song = resultOrFailure.flatMap((model) => Either.of([model]));
     state = state.copyWith(isLoading: false, allSongOrFailure: song);
   }
 
   getAllSongs() async {
+    if (state.allSongs.isNotEmpty) return;
     state = state.copyWith(isLoading: true);
     final likeCount = Map<num, num>.from(state.likeCount);
     final likeByUser = Map<num, bool>.from(state.isUserLike);
@@ -118,10 +120,12 @@ class SongsBloc extends StateNotifier<SongState> {
     }
   }
 
+  view(num songId) async {
+    await _viewSongUseCase(param: ViewSongParam(songId: songId)).run();
+  }
+
   _like(num songId) async {
     await _likeSongUseCase(param: LikeSongParam(songId: songId)).run();
-
-    // print(like.getOrElse((d) => "exception"));
   }
 
   _dislike(num songId) async {

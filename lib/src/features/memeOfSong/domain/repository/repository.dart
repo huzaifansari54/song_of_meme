@@ -8,6 +8,7 @@ import '../../../../core/exeption/failure_model.dart';
 
 abstract interface class ISongOfMemeRepository {
   TaskEither<ApiFailure, List<SongEntity>> getAllSong();
+  TaskEither<ApiFailure, Unit> downloadSong({required String url});
   TaskEither<ApiFailure, SongEntity> getSongById({required num songId});
   TaskEither<ApiFailure, SongEntity> getUserSong({required num pageI});
   TaskEither<ApiFailure, SongEntity> createSong({required String lyrics});

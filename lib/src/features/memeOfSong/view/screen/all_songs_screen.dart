@@ -6,6 +6,7 @@ import 'package:song_of_meme/src/core/extentions/util_extentions.dart';
 import 'package:song_of_meme/src/core/widget/error_widget.dart';
 import 'package:song_of_meme/src/core/widget/loading.dart';
 import 'package:song_of_meme/src/core/widget/succes.dart';
+import 'package:song_of_meme/src/features/auth/view/bloc/auth_bloc.dart';
 import 'package:song_of_meme/src/features/auth/view/widget/custome_widget.dart';
 import 'package:song_of_meme/src/features/memeOfSong/view/bloc/songs_bloc.dart';
 import 'package:song_of_meme/src/features/memeOfSong/view/screen/song_player_screen.dart';
@@ -31,6 +32,7 @@ class _AllSongsScreenState extends ConsumerState<AllSongsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = ref.watch(authBloc);
     final allSongs =
         ref.watch(songsBloc.select((selector) => selector.allSongOrFailure));
     final isLoading =
@@ -41,7 +43,16 @@ class _AllSongsScreenState extends ConsumerState<AllSongsScreen> {
         child: Column(
           children: [
             20.sh,
-            "AllSongs".text(),
+            Row(
+              children: [
+                20.sw,
+                "Hello".text(size: 25),
+                10.sw,
+                auth.authModel.name.text(
+                    size: 16, color: gray2, fontWeight: FontWeight.normal),
+              ],
+            ),
+            "AllSongs".text(size: 25),
             20.sh,
             CustomField(
                 onSearch: () {
@@ -65,6 +76,9 @@ class _AllSongsScreenState extends ConsumerState<AllSongsScreen> {
                             final sizeOfParent = constrant.maxWidth;
                             return GestureDetector(
                               onTap: () {
+                                ref
+                                    .read(songsBloc.notifier)
+                                    .view(num.tryParse(song.song_id) ?? 0);
                                 context.goTo(SongPlayerScreen(
                                   songEntity: song,
                                 ));

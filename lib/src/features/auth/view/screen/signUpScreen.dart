@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:song_of_meme/src/core/extentions/util_extentions.dart';
 import 'package:song_of_meme/src/core/widget/loading.dart';
+import 'package:song_of_meme/src/features/auth/view/screen/loginScreen.dart';
 
 import '../../../../core/constant/colors_const.dart';
 import '../bloc/auth_bloc.dart';
@@ -71,17 +72,28 @@ class _SingUpScreenState extends ConsumerState<SingUpScreen> {
                   ref.read(authBloc.notifier).setPassword(val);
                 },
               ),
-              InkWell(
-                onTap: () {
-                  ref.read(authBloc.notifier).signUp(context);
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: lightBlackColor),
-                  child: "SignUp".text(),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      ref.read(authBloc.notifier).signUp(context);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: lightBlackColor),
+                      child: "SignUp".text(),
+                    ),
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        context.goTo(const LoginScreen());
+                      },
+                      child: "Login".text(color: redColor)),
+                ],
               )
             ],
           ),

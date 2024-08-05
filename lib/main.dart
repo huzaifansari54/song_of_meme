@@ -63,17 +63,34 @@ class _HomeScreeState extends State<HomeScree> {
     _pageController = PageController();
   }
 
+  int selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView(
+        onPageChanged: (value) {
+          setState(() {
+            selectedIndex = value;
+          });
+        },
         controller: _pageController,
         children: const [AllSongsScreen(), SongCreationScreen()],
       ),
-      bottomNavigationBar: BottomNavigationBar(items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: "All"),
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Creation")
-      ]),
+      bottomNavigationBar: BottomNavigationBar(
+          onTap: (value) {
+            setState(() {
+              selectedIndex = value;
+            });
+            _pageController.animateToPage(selectedIndex,
+                duration: Durations.extralong1, curve: Curves.ease);
+          },
+          currentIndex: selectedIndex,
+          items: const [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.queue_music), label: "All"),
+            BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Creation")
+          ]),
     );
   }
 }

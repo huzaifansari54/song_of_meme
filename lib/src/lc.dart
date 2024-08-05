@@ -18,6 +18,7 @@ import 'package:song_of_meme/src/features/memeOfSong/domain/use_case/dislike_use
 import 'package:song_of_meme/src/features/memeOfSong/domain/use_case/get_all_songs.dart';
 import 'package:song_of_meme/src/features/memeOfSong/domain/use_case/get_song_by_id_use_case.dart';
 import 'package:song_of_meme/src/features/memeOfSong/domain/use_case/like_song_use_case.dart';
+import 'package:song_of_meme/src/features/memeOfSong/domain/use_case/view_song_use_case.dart';
 
 const timoutDuration = Duration(seconds: 20);
 
@@ -28,9 +29,6 @@ Future<void> setup() async {
       () => SharedPreferences.getInstance());
   lc.registerSingleton<Dio>(Dio(BaseOptions(
     receiveDataWhenStatusError: true,
-    sendTimeout: timoutDuration,
-    connectTimeout: conectionTimeOut,
-    receiveTimeout: timoutDuration,
     validateStatus: (status) => status! < 500,
   )));
 
@@ -57,7 +55,8 @@ Future<void> setup() async {
     ..registerSingleton(DislikeUseCase(repository: lc()))
     ..registerSingleton(LikeSongUseCase(repository: lc()))
     ..registerSingleton(GetSongByIdUseCase(repository: lc()))
-    ..registerSingleton(CreateSongUseCase(repository: lc()));
+    ..registerSingleton(CreateSongUseCase(repository: lc()))
+    ..registerSingleton(ViewSongUseCase(repository: lc()));
   // ..registerSingleton(LoginUseCase(repository: lc()))
   // ..registerSingleton(IsUserLogInUseCase(repository: lc()));
 }

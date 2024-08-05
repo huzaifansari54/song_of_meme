@@ -1,5 +1,12 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:song_of_meme/src/core/exeption/dio_exception.dart';
+import 'package:song_of_meme/src/core/exeption/exceptions.dart';
 import 'package:song_of_meme/src/core/exeption/failure_model.dart';
 import 'package:song_of_meme/src/core/extentions/util_extentions.dart';
 
@@ -41,4 +48,48 @@ showError(ApiFailure fail, BuildContext context) {
   }, invalidToken: () {
     context.snackbar("token failed");
   });
+}
+
+class Downloader {
+  Downloader({required Dio dio, required Directory directory})
+      : _dio = dio,
+        _directory = directory;
+  final Dio _dio;
+  Map<String, File> get cache => _cacheMap;
+  final Directory _directory;
+  final Map<String, File> _cacheMap = {};
+  Future<Either<ApiFailure, Unit>> downloadSong(
+      String url, void Function(int, int)? onReceiveProgress) async {
+    final permissio = await Permission.storage.request();
+    if (permissio.isGranted) {
+      try {
+        if (!_cacheMap.containsKey(url)) {
+          final file =
+              File('${_directory.path}${Uri.parse(url).pathSegments.last}');
+          final body = await _dio.get(url,
+              onReceiveProgress: onReceiveProgress,
+              options: Options(responseType: ResponseType.bytes));
+
+          final data = body.data;
+          file.writeAsBytesSync(data);
+          _cacheMap[url] = file;
+          return right(unit);
+        } else {
+          return right(unit);
+        }
+      } on FileSystemException catch (error) {
+        return left(ApiFailure.internetOut());
+      } on DioException catch (e) {
+        throw ApiException(
+            failure: dioErrorHandler(e),
+            message: e.message!,
+            status: e.message!);
+      } on Exception catch (error) {
+        return left(ApiFailure.serverFailed(message: "give as permission"));
+      }
+    } else {
+      await openAppSettings();
+      return left(ApiFailure.serverFailed(message: "give as permission"));
+    }
+  }
 }
